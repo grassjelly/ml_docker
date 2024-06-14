@@ -1,0 +1,31 @@
+services:
+  base:
+    runtime: nvidia
+    privileged: true
+    image: my-ml-project
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8888:8888
+    environment:
+      - MY_ENV=${MY_ENV}
+    volumes:
+      - .:/app
+    devices:
+    - /dev:/dev
+
+  dev:
+    container_name: dev
+    extends: base
+    command: sleep infinity
+   
+  cuda-test:
+    container_name: cuda-test
+    extends: base
+    command: python -c "import torch; print(torch.cuda.is_available())"
+  
+  jupyterlab:
+    container_name: jupyterlab
+    extends: base
+    command: jupyter lab --allow-root --ip=0.0.0.0

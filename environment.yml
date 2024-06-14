@@ -1,0 +1,13 @@
+name: my-ml-project
+channels:
+  - conda-forge
+  - pytorch
+  - nvidia
+
+dependencies:
+  - python=3.10
+  - jupyterlab
+  - pytorch-cuda=12.1
+  - pytorch::torchvision
+  - pytorch::pytorch
+
