@@ -46,9 +46,4 @@ services:
     extends: base
     command: jupyter lab --allow-root --ip=0.0.0.0
     ports:
-      - 8888:8888
-
-  test:
-    container_name: test
-    extends: base
-    command: python test.py
+      - 8888:888
