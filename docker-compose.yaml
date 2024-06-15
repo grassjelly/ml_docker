@@ -6,20 +6,35 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - 8888:8888
     environment:
-      - MY_ENV=${MY_ENV}
+      - DISPLAY=${DISPLAY:-:200}
     volumes:
       - .:/app
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - $HOME/.Xauthority:/root/.Xauthority
     devices:
     - /dev:/dev
+
+  kasmvnc:
+    container_name: kasmvnc
+    image: ghcr.io/linuxserver/baseimage-kasmvnc:alpine318
+    privileged: true
+    network_mode: host
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - $HOME/.Xauthority:/root/.Xauthority
+    environment:
+      - DISPLAY=:200
+    devices:
+      - /dev/dri:/dev/dri
 
   dev:
     container_name: dev
     extends: base
     command: sleep infinity
-   
+    depends_on: 
+    - kasmvnc
+
   cuda-test:
     container_name: cuda-test
     extends: base
@@ -29,3 +44,5 @@ services:
     container_name: jupyterlab
     extends: base
     command: jupyter lab --allow-root --ip=0.0.0.0
+    ports:
+      - 8888:8888
