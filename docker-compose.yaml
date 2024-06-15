@@ -4,16 +4,15 @@ services:
     privileged: true
     image: my-ml-project
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../
+      dockerfile: docker/Dockerfile
     environment:
       - DISPLAY=${DISPLAY:-:200}
     volumes:
-      - .:/app
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $HOME/.Xauthority:/root/.Xauthority
     devices:
-    - /dev:/dev
+      - /dev:/dev
 
   kasmvnc:
     container_name: kasmvnc
@@ -33,7 +32,9 @@ services:
     extends: base
     command: sleep infinity
     depends_on: 
-    - kasmvnc
+      - kasmvnc
+    volumes:
+      - ../:/app
 
   cuda-test:
     container_name: cuda-test
@@ -46,3 +47,8 @@ services:
     command: jupyter lab --allow-root --ip=0.0.0.0
     ports:
       - 8888:8888
+
+  test:
+    container_name: test
+    extends: base
+    command: python test.py
